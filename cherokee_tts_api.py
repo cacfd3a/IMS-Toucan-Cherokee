@@ -1,7 +1,7 @@
 # Run the Cherokee text-to-speech HTTP API, loading the required models on startup.
+import hashlib
 import json
 import os
-import shutil
 import tempfile
 import threading
 import unicodedata
@@ -14,14 +14,22 @@ from InferenceInterfaces.InferenceFastSpeech2 import InferenceFastSpeech2
 
 RELEASE = "2022.07.18.01"
 MODELS = {
-    "FastSpeech2_Cherokee_West/best.pt": (
-        f"https://github.com/CherokeeLanguage/IMS-Toucan/releases/download/{RELEASE}/"
-        "FastSpeech2_Cherokee_West-best.pt"
-    ),
-    "HiFiGAN_combined/best.pt": (
-        f"https://github.com/CherokeeLanguage/IMS-Toucan/releases/download/{RELEASE}/"
-        "HiFiGAN_combined-best.pt"
-    ),
+    "FastSpeech2_Cherokee_West/best.pt": {
+        "urls": (
+            f"https://github.com/CherokeeLanguage/IMS-Toucan/releases/download/{RELEASE}/"
+            "FastSpeech2_Cherokee_West-best.pt",
+            "https://nativeamerican.blackenvelope.net/FastSpeech2_Cherokee_West-best.pt",
+        ),
+        "sha256": "70ad6d4d517dbc0eb5adeac764dd5427a76eaa813309b190d2b712e09c74522e",
+    },
+    "HiFiGAN_combined/best.pt": {
+        "urls": (
+            f"https://github.com/CherokeeLanguage/IMS-Toucan/releases/download/{RELEASE}/"
+            "HiFiGAN_combined-best.pt",
+            "https://nativeamerican.blackenvelope.net/HiFiGAN_combined-best.pt",
+        ),
+        "sha256": "56b8c18a272f66c0cbf9104c4251b06c3be81b306c85be968429fbc1634d1690",
+    },
 }
 MAX_REQUEST_BYTES = 64 * 1024
 MAX_TEXT_CHARS = 2000
@@ -29,21 +37,43 @@ MODEL_LOCK = threading.Lock()
 
 
 def ensure_models():
-    for relative_path, url in MODELS.items():
+    for relative_path, model in MODELS.items():
         destination = Path("Models") / relative_path
-        if destination.is_file() and destination.stat().st_size:
-            continue
-
         destination.parent.mkdir(parents=True, exist_ok=True)
         temporary_path = destination.with_suffix(destination.suffix + ".download")
-        print(f"Downloading {destination} from IMS-Toucan {RELEASE}", flush=True)
-        try:
-            with urlopen(url, timeout=120) as response, temporary_path.open("wb") as output:
-                shutil.copyfileobj(response, output, length=1024 * 1024)
-            os.replace(temporary_path, destination)
-        except Exception:
-            temporary_path.unlink(missing_ok=True)
-            raise
+        expected_sha256 = model["sha256"]
+        if destination.is_file():
+            digest = hashlib.sha256()
+            with destination.open("rb") as existing:
+                for chunk in iter(lambda: existing.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            if digest.hexdigest() == expected_sha256:
+                continue
+            print(f"Existing model {destination} failed SHA-256 validation; replacing it", flush=True)
+
+        failures = []
+        for url in model["urls"]:
+            print(f"Downloading {destination} from {url}", flush=True)
+            try:
+                digest = hashlib.sha256()
+                with urlopen(url, timeout=120) as response, temporary_path.open("wb") as output:
+                    while chunk := response.read(1024 * 1024):
+                        output.write(chunk)
+                        digest.update(chunk)
+                actual_sha256 = digest.hexdigest()
+                if actual_sha256 != expected_sha256:
+                    raise ValueError(
+                        f"SHA-256 mismatch for {url}: expected {expected_sha256}, got {actual_sha256}"
+                    )
+                os.replace(temporary_path, destination)
+                break
+            except Exception as error:
+                temporary_path.unlink(missing_ok=True)
+                failures.append(f"{url}: {error}")
+        else:
+            raise RuntimeError(
+                f"Could not download a verified copy of {destination}: {'; '.join(failures)}"
+            )
 
 
 def normalize_text(text):

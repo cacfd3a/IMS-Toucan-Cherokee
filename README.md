@@ -102,6 +102,18 @@ pip install --no-cache-dir -r requirements.txt
 pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 
+#### Cherokee HTTP Inference API
+
+The standalone Cherokee HTTP inference service uses Python 3.14 in its Docker image and installs dependencies from
+`requirements-inference.txt`. The Python 3.8 environment above is for the existing toolkit and training workflows.
+At startup, it fetches the pinned Cherokee acoustic and HiFi-GAN models from the IMS-Toucan release, falls back to a
+separate backup host if needed, and validates each file with SHA-256 before loading it.
+
+```
+docker build -t cherokee-tts-api .
+docker run --rm -p 127.0.0.1:8765:8765 cherokee-tts-api
+```
+
 #### Speaker Embedding
 
 We use an ensemble of [Speechbrain's ECAPA-TDNN](https://huggingface.co/speechbrain/spkrec-ecapa-voxceleb)

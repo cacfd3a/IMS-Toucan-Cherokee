@@ -33,3 +33,4 @@ samples.animals/
 /result
 __pycache__/
 .pytest_cache/
+/outputs/*.wav

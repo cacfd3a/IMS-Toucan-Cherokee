@@ -1,4 +1,4 @@
-FROM python:3.8.20-slim-bookworm
+FROM python:3.14.9-slim-bookworm
 
 ENV PYTHONUNBUFFERED=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
