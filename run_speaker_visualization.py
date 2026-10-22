@@ -1,3 +1,5 @@
+"""Generate and visualize speaker embeddings from synthesized speech samples."""
+
 import os
 
 from Utility.EvaluationScripts.SpeakerVisualization import Visualizer

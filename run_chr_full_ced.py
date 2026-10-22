@@ -7,6 +7,7 @@ conda activate toucan_conda_venv
 exec python "$0" "$@"
 exit $?
 ''"""
+# Generate Cherokee speech and subtitle output from the configured text file.
 import _csv
 import csv
 import os

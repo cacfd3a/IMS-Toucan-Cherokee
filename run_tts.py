@@ -7,6 +7,7 @@ conda activate toucan_conda_venv
 exec python "$0" "$@"
 exit $?
 ''"""
+# Synthesize Cherokee speech from command-line text or file input and save the audio.
 from __future__ import annotations
 
 import argparse

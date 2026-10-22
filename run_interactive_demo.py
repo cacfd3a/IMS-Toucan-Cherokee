@@ -1,3 +1,5 @@
+"""Launch an interactive prompt for synthesizing speech with a selected model."""
+
 import datetime
 import os
 import sys
@@ -30,4 +32,3 @@ if __name__ == '__main__':
             tts.read_aloud(text, view=True, blocking=True)
             file_location = f"{int(datetime.datetime.today().timestamp() * 1000)}.wav"
             tts.read_to_file([text], file_location)
-

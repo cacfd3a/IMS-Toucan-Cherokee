@@ -1,3 +1,5 @@
+"""Evaluate generated speech against reference audio and report comparison metrics."""
+
 import os
 
 from tqdm import tqdm

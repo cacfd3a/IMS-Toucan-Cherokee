@@ -1,3 +1,5 @@
+"""Select and run one of the toolkit's available speech-model training pipelines."""
+
 import argparse
 import sys
 import warnings

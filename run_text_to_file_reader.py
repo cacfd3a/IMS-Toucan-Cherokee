@@ -1,3 +1,5 @@
+"""Synthesize one or more text inputs and save the resulting audio files."""
+
 import os
 
 import torch

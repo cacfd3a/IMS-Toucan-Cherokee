@@ -7,6 +7,7 @@ conda activate toucan_conda_venv
 exec python "$0" "$@"
 exit $?
 ''"""
+# Generate Cherokee speech for the configured Osiyo Tohiju text.
 
 import datetime
 import os

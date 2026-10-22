@@ -1,6 +1,5 @@
-"""
-https://alexander-stasiuk.medium.com/pytorch-weights-averaging-e2c0fa611a0c
-"""
+# Average model checkpoints and save the combined speech-model weights.
+# Background: https://alexander-stasiuk.medium.com/pytorch-weights-averaging-e2c0fa611a0c
 
 import os
 

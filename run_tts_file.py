@@ -7,6 +7,7 @@ conda activate toucan_conda_venv
 exec python "$0" "$@"
 exit $?
 ''"""
+# Synthesize speech from structured entries in a text file and save the audio outputs.
 from __future__ import annotations
 
 import argparse

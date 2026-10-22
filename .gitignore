@@ -25,3 +25,11 @@ samples.animals/
 *.zip
 /samples*/
 *.pt
+/venv/
+/.venv/
+/toucan_conda_venv/
+/build/
+/dist/
+/result
+__pycache__/
+.pytest_cache/

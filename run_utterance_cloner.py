@@ -1,3 +1,5 @@
+"""Clone an utterance's speaking style while synthesizing new text."""
+
 import os
 
 import soundfile as sf

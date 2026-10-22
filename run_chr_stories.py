@@ -7,6 +7,7 @@ conda activate toucan_conda_venv
 exec python "$0" "$@"
 exit $?
 ''"""
+# Generate Cherokee speech files for the configured stories.
 
 import datetime
 import os

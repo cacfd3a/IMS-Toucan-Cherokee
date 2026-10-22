@@ -7,6 +7,7 @@ conda activate toucan_conda_venv
 exec python "$0" "$@"
 exit $?
 ''"""
+# Generate Cherokee animal-name speech using the configured model and speaker references.
 
 import datetime
 import os

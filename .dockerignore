@@ -1,0 +1,11 @@
+.git
+.gitignore
+venv/
+.venv/
+toucan_conda_venv/
+Models/
+build/
+dist/
+__pycache__/
+.pytest_cache/
+*.pyc
